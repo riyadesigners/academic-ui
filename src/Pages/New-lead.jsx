@@ -99,7 +99,10 @@ const [errors, setErrors] = useState({});
       newErrors.leadSource = "Lead Source is required";
     if(!formData.leadStatus)
       newErrors.leadStatus = "Lead Status is required";
-    if(["Active", "Inactive", "Converted"].includes)
+    if(["Active", "Inactive", "Converted"].includes(formData.leadStatus) && !formData.leadRemark)
+      newErrors.leadRemark = "Lead Status Remark is required";
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
   }
 
   const handleChange = (e) => {
@@ -114,6 +117,8 @@ const [errors, setErrors] = useState({});
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    if (!validateLeadForm()) return;
     try{
     const payload = {
       ...formData,
@@ -215,7 +220,10 @@ const [errors, setErrors] = useState({});
     {/* First Name */}
     <div className="col-md-3">
       <label className="form-label  ">First Name</label>
-      <input type="text" className="form-control modern-input" name="enquiryFName" onChange={handleChange} value={formData.enquiryFName} />
+      <input type="text" className={`form-control modern-input ${errors.enquiryFName ? "is-invald" : ""}`} name="enquiryFName" onChange={handleChange} value={formData.enquiryFName} />
+      {errors.enquiryFName && (
+        <small className="text-danger">{errors.enquiryFName}</small>
+      )}
     </div>
 
     {/* Last Name */}
@@ -227,24 +235,33 @@ const [errors, setErrors] = useState({});
     {/* Contact Number */}
     <div className="col-md-3">
       <label className="form-label  ">Contact Number</label>
-      <input type="text" className="form-control modern-input" name="contactNumber" onChange={handleChange} value={formData.contactNumber} />
+      <input type="text" className={`form-control modern-input ${errors.contactNumber ? "is-invald" : ""}`} name="contactNumber" onChange={handleChange} value={formData.contactNumber} />
+      {errors.contactNumber && (
+        <small className="text-danger">{errors.contactNumber}</small>
+      )}
     </div>
 
     {/* Email */}
     <div className="col-md-3">
       <label className="form-label  ">Email Id</label>
-      <input type="email" className="form-control modern-input" name="email" onChange={handleChange} value={formData.email} />
+      <input type="email" className={`form-control modern-input ${errors.email ? "is-invald" : ""}`} name="email" onChange={handleChange} value={formData.email} />
+      {errors.email && (
+        <small className="text-danger">{errors.email}</small>
+      )}
     </div>
 
     {/* Branch */}
     <div className="col-md-3">
       <label className="form-label  ">Branch</label>
-      <select className="form-select modern-input" name="branch" onChange={handleChange} value={formData.branch}>
+      <select className={`form-select modern-input ${errors.branch ? "is-invald" : ""}`} name="branch" onChange={handleChange} value={formData.branch}>
         <option value="">Select</option>
         <option>Nerul</option>
         <option>Thane</option>
         <option>Pune</option>
       </select>
+      {Error.branch && (
+        <small className="text-danger">{errors.branch}</small>
+      )}
     </div>
 
     {/* Lead Location */}
@@ -257,23 +274,29 @@ const [errors, setErrors] = useState({});
     <div className="col-md-3">
       <label className="form-label  ">Course Interested</label>
      
-       <select className="form-select modern-input" name="courseInterested" onChange={handleChange}  value={formData.courseInterested}>
+       <select className={`form-select modern-input ${errors.courseInterested ? "is-invald" : ""}`} name="courseInterested" onChange={handleChange}  value={formData.courseInterested}>
         <option value="">Select</option>
         <option>Course 1</option>
         <option>Course 2</option>
         <option>Course 3</option>
       </select>
+      {errors.courseInterested && (
+        <small className="text-danger">{errors.courseInterested}</small>
+      )}
     </div>
 
     {/* Lead Owner */}
     <div className="col-md-3">
       <label className="form-label  ">Lead Owner</label>
-      <select className="form-select modern-input" name="leadOwner" onChange={handleChange} value={formData.leadOwner}>
+      <select className={`form-select modern-input ${errors.leadOwner ? "is-invald" : ""}`} name="leadOwner" onChange={handleChange} value={formData.leadOwner}>
         <option value="">Select</option>
         <option>Tejaswi Sawant</option>
         <option>Vaibhav Mhatre</option>
         <option>Other Owner</option>
       </select>
+      {errors.leadOwner && (
+        <small className="text-danger">{errors.leadOwner}</small>
+      )}
     </div>
 
     {/* Enquiry Date */}
@@ -284,7 +307,7 @@ const [errors, setErrors] = useState({});
       showIcon
       selected={formData.enquiryDate}
       onChange={(date) => setFormData({...formData, enquiryDate:date})}
-      className="form-control modern-datepicker"
+      className={`form-control modern-datepicker ${errors.enquiryDate ? "is-invald" : ""}`}
        placeholderText="Select Date"
         icon={
         <svg
@@ -310,19 +333,26 @@ const [errors, setErrors] = useState({});
         </svg>
       }
     dateFormat="dd-MM-yyyy" />
+    {errors.enquiryDate && (
+      <small className="text-danger">{errors.enquiryDate}</small>
+    )}
 
     </div>
 
     {/* Lead Source */}
     <div className="col-md-3">
       <label className="form-label  ">Lead Source</label>
-      <select className="form-select modern-input" name="leadSource" onChange={handleChange} value={formData.leadSource}>
+      <select className={`form-select modern-input ${errors.leadSource ? "is-invald" : ""}`} name="leadSource" onChange={handleChange} value={formData.leadSource}>
         <option value="">Select</option>
         <option>Meta</option>
         <option>Google Ads</option>
         <option>Website</option>
         <option>Walk-in</option>
       </select>
+      {errors.leadSource && (
+        <small className="text-danger">{errors.leadSource}</small>
+ 
+      )}
     </div>
 
     {/* Call Date */}
@@ -411,18 +441,21 @@ const [errors, setErrors] = useState({});
     {/* Lead Status */}
     <div className="col-md-3">
       <label className="form-label  ">Lead Status</label>
-      <select className="form-select modern-input" name="leadStatus" onChange={handleChange} value={formData.leadStatus}>
+      <select className={`form-select modern-input ${errors.leadStatus ? "is-invald" : ""}`} name="leadStatus" onChange={handleChange} value={formData.leadStatus}>
         <option value="">Select</option>
         <option>Active</option>
         <option>Inactive</option>
         <option>Converted</option>
        
       </select>
+      {errors.leadStatus && (
+        <small className="text-danger">{errors.leadStatus}</small>
+      )}
     </div>
 
       <div className="col-md-3">
       <label className="form-label  ">Lead Status Remark</label>
-      <select className="form-select modern-input" name="leadRemark" onChange={handleChange} value={formData.leadRemark} 
+      <select className={`form-select modern-input ${errors.leadRemark ? "is-invald" : ""}`} name="leadRemark" onChange={handleChange} value={formData.leadRemark} 
         disabled={!["Active", "Inactive", "Converted"].includes(formData.leadStatus)} >
         <option value="">Select</option>
         {leadRemarksOptions[formData.leadStatus]?.map((remark, index) =>(
@@ -430,6 +463,9 @@ const [errors, setErrors] = useState({});
             {remark}
           </option>        ))}
       </select>
+      {errors.leadRemark && (
+        <small className="text-danger">{errors.leadRemark}</small>
+      )}
     </div>
 
 
