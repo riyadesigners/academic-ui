@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./forms.css";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import api from "../api/axiosInstance";
 
 const LeadList = () => {
   const [leads, setLeads] = useState([]);
@@ -15,8 +16,8 @@ const LeadList = () => {
 
 const fetchLeads = async (currentPage) => {
   try {
-    const res = await axios.get(
-      `http://localhost:8081/riya_institute/leads?page=${currentPage}&limit=10`
+    const res = await api.get(
+      `/riya_institute/leads?page=${currentPage}&limit=10`
     );
 
     setLeads(res.data.data);

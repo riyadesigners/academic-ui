@@ -5,6 +5,7 @@ import 'react-datepicker/dist/react-datepicker.css';
 import { useNavigate, useLocation  } from "react-router-dom";
 import axios from "axios";
 import { useEffect } from "react";
+import api from "../api/axiosInstance";
 
 const LeadForm = () => {
 
@@ -133,7 +134,7 @@ const [errors, setErrors] = useState({});
       : null
     };
 
-     axios.post('http://localhost:8081/riya_institute/addLead', payload,
+     api.post('/riya_institute/addLead', payload,
       {header : {'Content-Type': 'application/json'}}
      );
      alert("Lead saved successfully!");
@@ -150,8 +151,8 @@ const [errors, setErrors] = useState({});
 
   const fetchLead = async () => {
     try {
-      const res = await axios.get(
-        `http://localhost:8081/riya_institute/lead/${leadId}`
+      const res = await api.get(
+        `/riya_institute/lead/${leadId}`
       );
 
       const lead = res.data;
@@ -185,7 +186,7 @@ const [errors, setErrors] = useState({});
         ? formData.nextFollowUp.toISOString().split('T')[0]
         : null
       };
-      await axios.put(`http://localhost:8081/riya_institute/updateLead/${formData.id}`, payload,);
+      await api.put(`/riya_institute/updateLead/${formData.id}`, payload,);
       alert("Lead updated Successfully");
       navigate("/Leadlist");
       console.log("Edit Lead:", leadId);

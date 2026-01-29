@@ -14,7 +14,7 @@ useEffect(() => {
 
 const fetchLeads = async (currentPage) => {
   const res = await axios.get(
-    `http://localhost:8081/riya_institute/leads1?page=${currentPage}&limit=5`
+    `http://localhost:8081/riya_institute/ActiveLead?page=${currentPage}&limit=5`
   );
   setLeads(res.data.data);
   setTotalPages(res.data.pagination.totalPages);

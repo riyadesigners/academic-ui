@@ -7,6 +7,7 @@ import axios from "axios";
 import { useEffect } from "react";
 import { Tabs, Tab, Accordion, Card, Form, NavItem } from "react-bootstrap";
 import { add, set } from "date-fns";
+import api from "../../api/axiosInstance";
 
 const AddStudent = () => {
   const navigate = useNavigate();
@@ -350,15 +351,15 @@ const AddStudent = () => {
 
     try {
       if (isEditMode) {
-        await axios.put(
-          `http://localhost:8081/riya_institute/updateStudent/${studentId}`,
+        await api.put(
+          `/riya_institute/updateStudent/${studentId}`,
           formPayload,
           { headers: { "Content-Type": "multipart/form-data" } },
         );
         alert("Student updated successfully");
       } else {
-        const res = await axios.post(
-          "http://localhost:8081/riya_institute/addStudent",
+        const res = await api.post(
+          "/riya_institute/addStudent",
           formPayload,
           { headers: { "Content-Type": "multipart/form-data" } },
         );
@@ -378,8 +379,8 @@ const AddStudent = () => {
 
     const fetchStudent = async () => {
       try {
-        const res = await axios.get(
-          `http://localhost:8081/riya_institute/student/${studentId}`,
+        const res = await api.get(
+          `/riya_institute/student/${studentId}`,
         );
 
         const { personal, academics, payment } = res.data;
@@ -425,14 +426,14 @@ const AddStudent = () => {
         setAcademicRows(academics);
         // setFormData((prev) => ({ ...prev, ...payment }));
         if (personal.photo_name) {
-          setPreview(`http://localhost:8081/images/pic/${personal.photo_name}`);
+          setPreview(`${process.env.REACT_APP_API_URL}/images/pic/${personal.photo_name}`);
         }
         if (personal.address_proof_name) {
           setAddressProofName(personal.address_proof_name);
 
           if (!personal.address_proof_name.endsWith(".pdf")) {
             setAddressPreview(
-              `http://localhost:8081/images/pic/${personal.address_proof_name}`,
+              `${process.env.REACT_APP_API_URL}/images/pic/${personal.address_proof_name}`,
             );
           }
         }

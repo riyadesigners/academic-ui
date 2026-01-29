@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import api from "../../api/axiosInstance";
 import "./../forms.css";
 import { set } from "date-fns";
 
@@ -34,8 +35,8 @@ const StudentList = () => {
 
   const fetchStudents = async (currentPage) => {
     try {
-      const res = await axios.get(
-        `http://localhost:8081/riya_institute/students?page=${currentPage}&limit=${limit}`,
+      const res = await api.get(
+        `/riya_institute/students?page=${currentPage}&limit=${limit}`,
       );
       setStudents(res.data.data);
       setTotalPages(res.data.pagination.totalPages);
@@ -44,17 +45,27 @@ const StudentList = () => {
     }
   };
 
-  const openPayModal = async (studentId) => {
+const openPayModal = async (studentId) => {
+  try {
     setSelectedStudent(studentId);
-    const res = await axios.get(
-      `http://localhost:8081/riya_institute/student/${studentId}/installments`,
+
+    const res = await api.get(
+      `/riya_institute/student/${studentId}/installments`
     );
-    setInstallments(res.data);
+
+    setStudent(res.data.student);
+    setSummary(res.data.paymentSummary);
+    setInstallments(res.data.installments);  
+
     setShowModal(true);
-  };
+  } catch (err) {
+    console.error(err);
+  }
+};
+
 
   const payEmi = async (installment) => {
-    await axios.post("http://localhost:8081/riya_institute/student/pay-emi", {
+    await api.post("/riya_institute/student/pay-emi", {
       installmentId: installment.id,
       studentId: selectedStudent,
       amount: installment.amount,
@@ -76,8 +87,8 @@ const StudentList = () => {
     try {
       setSelectedStudent(studentId);
 
-      const res = await axios.get(
-        `http://localhost:8081/riya_institute/student/${studentId}/installments`,
+      const res = await api.get(
+        `/riya_institute/student/${studentId}/installments`,
       );
 
       setStudent(res.data.student);
@@ -91,7 +102,7 @@ const StudentList = () => {
   };
   const confirmPayEmi = async () => {
     try {
-      await axios.post("http://localhost:8081/riya_institute/student/pay-emi", {
+      await api.post("/riya_institute/student/pay-emi", {
         installmentId: selectedInstallment.id,
         studentId: selectedStudent,
         amount: selectedInstallment.amount,
@@ -162,7 +173,7 @@ const StudentList = () => {
                   <td>
                     {stu.photo_name ? (
                       <img
-                        src={`http://localhost:8081/images/pic/${stu.photo_name}`}
+                        src={`${process.env.REACT_APP_API_URL}/images/pic/${stu.photo_name}`}
                         alt="student"
                         width="45"
                         height="45"
@@ -244,7 +255,7 @@ const StudentList = () => {
                   <div className="row w-100 mt-2">
                     <div className="col-lg-12 d-flex align-items-center gap-3">
                       <img
-                        src={`http://localhost:8081${student.photo}`}
+                        src={`${process.env.REACT_APP_API_URL}${student.photo}`}
                         className="rounded-circle"
                         width="60"
                         height="60"
@@ -330,8 +341,11 @@ const StudentList = () => {
                             {ins.status === "PENDING" ? (
                               <button
                                 className="btn btn-success btn-sm px-3"
-                                onClick={() => openPayModal(ins)}
-                              >
+                               onClick={() => {
+                                      setSelectedInstallment(ins);
+                                      setShowPayModal(true);
+                                    }}
+                                                                >
                                 Pay EMI
                               </button>
                             ) : (

@@ -2,6 +2,7 @@ import React,{useState} from 'react';
 import { useNavigate, Link } from "react-router-dom";
 import logo from '../assets/logo.png'
 import axios from 'axios';
+import api from '../api/axiosInstance';
 import Validation  from './LoginValidation';
 
 const Login = () => {
@@ -24,7 +25,7 @@ const Login = () => {
       setServerMessage(' ');
       setIsSuccess(false);
 
-     axios.post('http://localhost:8081/riya_institute/login', values)
+     api.post('/riya_institute/login', values)
         .then(res => {
           const msg = res?.data?.message || 'Logged in successfully';
            localStorage.setItem("riya_user", JSON.stringify(res.data));
